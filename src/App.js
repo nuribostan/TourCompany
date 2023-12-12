@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react';
+import Home from './page/Home';
+import About from './page/About';
+import Contact from '../src/components/Contact';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GunubirlikTurlar from './page/GunubirlikTurlar';
+import YurtdışıTurlar from './page/YurtdışıTurlar';
+import KonaklamalıTurlar from './page/KonaklamalıTurlar';
+import AdminPanel from './page/AdminPanel';
+import Login from './page/Login';
+import { AuthContext } from './Context/AuthContext';
+
+
 
 function App() {
+
+
+  const { currentUser } = useContext(AuthContext);
+
+  const ProtectedRoute = ({children}) => {
+    if(!currentUser){
+      return <Login />
+    }
+
+    return children;
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/hakkimizda" element={<About />} />
+          <Route path="/gunubirlik-turlar/*" element={<GunubirlikTurlar />} />
+          <Route path="/yurtdisi-turlar" element={<YurtdışıTurlar />} />
+          <Route path="/konaklamali-turlar" element={<KonaklamalıTurlar />} />
+          <Route path="/iletişim" element={<Contact />} />
+          <Route path="/admin-panel/*" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
